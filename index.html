@@ -76,6 +76,48 @@
   @media (prefers-reduced-motion: reduce){ .road-line{animation:none;} }
   @keyframes drive{ from{background-position:0 0;} to{background-position:-200px 0;} }
 
+  /* Reusable section background support */
+  .section-bg{
+    position:relative;
+    isolation:isolate;
+    overflow:hidden;
+  }
+  .section-bg::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image:var(--section-bg, none);
+    background-size:var(--section-bg-size, cover);
+    background-position:var(--section-bg-pos, center center);
+    background-repeat:no-repeat;
+    opacity:.56;
+    z-index:-2;
+  }
+  .section-bg::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(180deg, rgba(14,16,19,0.40) 0%, rgba(14,16,19,0.55) 100%);
+    z-index:-1;
+  }
+  .section-bg > *{ position:relative; z-index:1; }
+
+  /* Light section (steps) — hafif doku, metin net okunmalı */
+  .section-bg.light-bg::after{
+    background:linear-gradient(180deg, rgba(244,241,234,0.48) 0%, rgba(244,241,234,0.58) 100%);
+  }
+  .section-bg.light-bg::before{
+    opacity:.55;
+  }
+
+  /* Desktop: arka plan resimleri PC'de daha geniş açıdan göster */
+  @media(min-width:720px){
+    .section-bg::before{
+      background-size:var(--section-bg-size-desktop, var(--section-bg-size, cover));
+      background-position:var(--section-bg-pos-desktop, var(--section-bg-pos, center center));
+    }
+  }
+
   /* Header */
   header{
     position:sticky; top:0; z-index:1000;
@@ -175,7 +217,7 @@
   }
 
   /* Route strip — coverage as mile markers */
-  .route{ background:var(--asphalt-2); padding:36px 0 30px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .route{ background:var(--asphalt-2); padding:64px 0 56px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
   .route-head{ padding:0 20px 20px; text-align:center; }
   .route-head h2{ color:var(--warm-white); font-size:20px; }
   .route-head p{ color:var(--steel); font-size:13px; margin-top:6px; }
@@ -209,7 +251,7 @@
   .step p{ font-size:13.5px; color:#5b5b5b; line-height:1.5; }
 
   /* Trust features */
-  .features{ padding:8px 20px 48px; background:var(--warm-white); display:flex; flex-direction:column; gap:14px; max-width:520px; margin:0 auto; }
+  .features{ padding:8px 20px 48px; background:var(--warm-white); display:flex; flex-direction:column; gap:14px; align-items:center; }
   .feature-box{
     display:flex; align-items:flex-start; gap:14px;
     background:#fff; padding:18px; border-radius:8px;
@@ -222,19 +264,22 @@
   .icon{ font-size:22px; line-height:1; padding-top:2px; }
 
   /* Vehicle types */
-  .vehicles{ background:var(--asphalt-2); padding:40px 20px; border-top:1px solid var(--line); }
+  .vehicles{ background:var(--asphalt-2); padding:70px 20px; border-top:1px solid var(--line); }
   .vehicles .section-head h2{ color:var(--warm-white); }
   .vehicle-row{ display:flex; gap:12px; max-width:520px; margin:0 auto; flex-wrap:wrap; justify-content:center; }
   .vehicle-chip{
     font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--warm-white);
-    border:1px solid var(--line); border-radius:999px; padding:9px 16px;
-    transition:border-color .2s ease, transform .2s ease;
+    background:var(--asphalt-3);
+    border:1px solid rgba(244,241,234,0.25); border-radius:999px; padding:9px 16px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.4);
+    transition:border-color .2s ease, transform .2s ease, background .2s ease;
   }
   .vehicle-chip:hover{ border-color:var(--hazard); transform:translateY(-2px); }
 
+
   /* Final CTA */
   .final-cta{
-    padding:48px 20px; text-align:center;
+    padding:76px 20px; text-align:center;
     background:linear-gradient(180deg, var(--asphalt) 0%, #000 100%);
   }
   .final-cta h2{ color:var(--warm-white); font-size:26px; margin-bottom:8px; }
@@ -263,8 +308,19 @@
     .action-buttons{ flex-direction:row; max-width:520px; }
     .steps{ padding:64px 20px; }
     .step-list{ max-width:600px; }
-    .features{ flex-direction:row; flex-wrap:wrap; max-width:900px; }
-    .feature-box{ flex:1 1 260px; }
+    .features{ flex-direction:row; flex-wrap:wrap; justify-content:center; padding:24px 60px 52px; gap:20px; }
+    .feature-box{ flex:1 1 260px; max-width:340px; }
+    .route{ padding:84px 0 72px; }
+    .vehicles{ padding:72px 20px; }
+    .vehicles.section-bg::before{
+      background-image:var(--section-bg, none);
+      background-size:85% auto;
+      background-position:center 18%;
+      background-repeat:no-repeat;
+      opacity:.38;
+    }
+    .vehicles.section-bg::after{ background:rgba(14,16,19,0.60); }
+    .final-cta{ padding:96px 20px; }
   }
 </style>
 </head>
@@ -283,7 +339,7 @@
 </header>
 <div class="road-line" aria-hidden="true"></div>
 
-<section class="hero">
+<section class="hero section-bg" style="--section-bg: url('gallery/picture1.jpg');">
   <div class="hero-content">
     <span class="eyebrow">Şanlıurfa · 7/24 · Kesintisiz Yol Yardım</span>
     <h1>Yolda Kaldıysanız<br><em>30 Dakikada</em> Yanınızdayız</h1>
@@ -298,7 +354,7 @@
   </div>
 </section>
 
-<section class="route">
+<section class="route section-bg" style="--section-bg:url('gallery/picture2.jpg'); --section-bg-size:cover; --section-bg-size-desktop:cover; --section-bg-pos:center 45%">
   <div class="route-head">
     <h2>Urfa'nın Her Noktası Rotamızda</h2>
     <p>Şehir içinde ortalama 25-30 dakikada olay yerindeyiz</p>
@@ -310,7 +366,7 @@
   </div>
 </section>
 
-<section class="steps">
+<section class="steps section-bg light-bg" style="--section-bg:url('gallery/picture3.jpg'); --section-bg-size:cover; --section-bg-size-desktop:cover; --section-bg-pos:center 35%">
   <div class="section-head">
     <span class="eyebrow">Nasıl Çalışır</span>
     <h2>Aramanızdan Sonra Üç Adım</h2>
@@ -346,7 +402,7 @@
   </div>
 </section>
 
-<section class="vehicles">
+<section class="vehicles section-bg" style="--section-bg:url('gallery/picture4.jpg'); --section-bg-size:contain; --section-bg-pos:center center">
   <div class="section-head">
     <span class="eyebrow" style="color:var(--hazard)">Kapsam</span>
     <h2>Hangi Araçları Taşıyoruz</h2>
@@ -359,7 +415,7 @@
   </div>
 </section>
 
-<section class="final-cta">
+<section class="final-cta section-bg" style="--section-bg:url('gallery/picture5.jpg'); --section-bg-size:cover; --section-bg-size-desktop:cover; --section-bg-pos:center 50%">
   <h2>Yolda Kaldınız, Biz Hallederiz</h2>
   <p>Tek tuşla arayın, konumunuzu bulalım.</p>
   <div class="action-buttons" style="margin:0 auto;">
